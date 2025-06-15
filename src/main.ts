@@ -8,17 +8,8 @@ async function bootstrap() {
     new ValidationPipe({
       whitelist: true,
       forbidNonWhitelisted: true,
-      exceptionFactory: (errors) => {
-        const formattedErrors = errors.map((error) => ({
-          property: error.property,
-          constraints: error.constraints,
-        }));
-        return new Error(JSON.stringify(formattedErrors)); // This is a bad practice,
-        // but it serves as an example of how to format errors.
-        // In production, consider using a more structured error response.
-      },
     }),
   );
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 4000);
 }
 bootstrap();
