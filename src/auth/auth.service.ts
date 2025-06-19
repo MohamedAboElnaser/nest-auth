@@ -45,7 +45,7 @@ export class AuthService {
     }
 
     // Return user without password
-    const { password, ...result } = user.toObject();
+    const { password, ...result } = user;
     return result;
   }
 

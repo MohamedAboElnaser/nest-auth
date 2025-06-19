@@ -23,6 +23,6 @@ export class UserService {
   }
 
   async getUserDocument(query: FilterQuery<User>) {
-    return await this.userModel.findOne(query);
+    return await this.userModel.findOne(query).lean();
   }
 }
