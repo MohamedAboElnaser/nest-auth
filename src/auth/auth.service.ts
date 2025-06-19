@@ -1,6 +1,12 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterDto } from './dtos/register.dto';
 import { UserService } from 'src/user/user.service';
+import { LoginDto } from './dtos/login.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -17,5 +23,24 @@ export class AuthService {
 
     //Hash password and save the Document to the DB collection
     return await this.userService.create(data);
+  }
+
+  async verifyUser(data: LoginDto) {
+    // Verify that user exists
+    const user = await this.userService.getUserDocument({ email: data.email });
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    const isPassCorrect = await bcrypt.compare(data.password, user.password);
+
+    if (!isPassCorrect) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
+    // Return user without password
+    const { password, ...result } = user.toObject();
+    return result;
   }
 }
