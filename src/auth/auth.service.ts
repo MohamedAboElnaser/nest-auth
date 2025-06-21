@@ -52,11 +52,11 @@ export class AuthService {
   }
 
   login(user: User) {
-    return this.generateTokens(user);
+    return this.generateTokens(user.email, user._id as string);
   }
 
-  generateTokens(userData: User) {
-    const payload = { email: userData.email, sub: userData._id };
+  generateTokens(userEmail: string, userId: string) {
+    const payload = { email: userEmail, sub: userId };
     const access_token = this.jwtService.sign(payload);
     const refresh_token = this.jwtService.sign(payload, {
       secret: this.config.get<string>('REFRESH_JWT_SECRET'),
