@@ -9,12 +9,14 @@ import { LoginDto } from './dtos/login.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/schemas/user.schema';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
   async register(data: RegisterDto) {
     //Make sure the email is unique
@@ -49,10 +51,20 @@ export class AuthService {
     return result;
   }
 
-  login(user: Omit<User, 'password'>) {
-    const payload = { email: user.email, sub: user._id };
+  login(user: User) {
+    return this.generateTokens(user);
+  }
+
+  generateTokens(userData: User) {
+    const payload = { email: userData.email, sub: userData._id };
+    const access_token = this.jwtService.sign(payload);
+    const refresh_token = this.jwtService.sign(payload, {
+      secret: this.config.get<string>('REFRESH_JWT_SECRET'),
+      expiresIn: this.config.get<string | number>('REFRESH_JWT_EXPIRES_IN'),
+    });
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token,
+      refresh_token,
     };
   }
 }
