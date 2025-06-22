@@ -10,7 +10,10 @@ export class User extends Document {
   email: string;
 
   @Prop({ required: false })
-  password: string;
+  password?: string;
+
+  @Prop({ required: false })
+  avatar_url?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
