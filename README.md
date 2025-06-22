@@ -1,73 +1,204 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# NestJS Authentication API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A robust authentication system built with NestJS, featuring multiple authentication strategies including local login and Google OAuth integration.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **User Registration & Login** - Traditional email/password authentication
+- **JWT Authentication** - Access and refresh token implementation
+- **Google OAuth** - Social login integration
+- **Secure Cookies** - HTTP-only cookies for refresh tokens
+- **MongoDB Integration** - User data persistence
+- **Password Hashing** - Secure bcrypt encryption
+- **Input Validation** - Request validation with class-validator
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Quick Start
 
-## Installation
+### Prerequisites
+
+- Node.js (v16 or higher)
+- Docker & Docker Compose
+- MongoDB (or use the provided Docker setup)
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd Auth-In-Nest
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Environment Setup**
+
+   Create a `.env` file in the root directory with your configuration:
+
+   ```env
+   # Database
+   DB_CONNECTION_STRING='mongodb://admin:password@localhost:27017/nestjs-auth'
+
+   # Server
+   NODE_ENV='development'
+   PORT=4000
+
+   # JWT Configuration
+   JWT_SECRET='your-jwt-secret'
+   JWT_EXPIRES_IN='2h'
+   REFRESH_JWT_SECRET='your-refresh-jwt-secret'
+   REFRESH_JWT_EXPIRES_IN='4d'
+
+   # Cookie Configuration
+   REFRESH_TOKEN_COOKIE_EXPIRES_IN_DAYS=4
+
+   # Google OAuth (Get from Google Cloud Console)
+   GOOGLE_CLIENT_ID='your-google-client-id'
+   GOOGLE_CLIENT_SECRET='your-google-client-secret'
+   GOOGLE_CALLBACK_URL='http://localhost:4000/auth/google/callback'
+
+   # Frontend URL
+   FRONTEND_URL='http://localhost:4000/frontend'
+   ```
+
+4. **Start MongoDB with Docker**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+5. **Run the application**
+
+   ```bash
+   # Development mode
+   npm run start:dev
+
+   # Production mode
+   npm run start:prod
+   ```
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint                | Description               |
+| ------ | ----------------------- | ------------------------- |
+| POST   | `/auth/register`        | Register new user         |
+| POST   | `/auth/login`           | Login with email/password |
+| POST   | `/auth/refresh`         | Refresh access token      |
+| GET    | `/auth/google`          | Initiate Google OAuth     |
+| GET    | `/auth/google/callback` | Google OAuth callback     |
+
+### Users
+
+| Method | Endpoint    | Description                       |
+| ------ | ----------- | --------------------------------- |
+| GET    | `/users/me` | Get current user data (protected) |
+
+### General
+
+| Method | Endpoint              | Description             |
+| ------ | --------------------- | ----------------------- |
+| GET    | `/`                   | Health check            |
+| GET    | `/protected-resource` | Test protected endpoint |
+
+## Usage Examples
+
+### Register a new user
 
 ```bash
-$ npm install
+curl -X POST http://localhost:4000/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+  }'
 ```
 
-## Running the app
+### Login
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+curl -X POST http://localhost:4000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "password123"
+  }'
 ```
 
-## Test
+### Access protected endpoint
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+curl -X GET http://localhost:4000/users/me \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
 ```
 
-## Support
+## Google OAuth Setup
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Google+ API
+4. Create OAuth 2.0 credentials
+5. Add authorized redirect URI: `http://localhost:4000/auth/google/callback`
+6. Copy Client ID and Client Secret to your `.env` file
 
-## Stay in touch
+## Database Management
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Access MongoDB through the web interface:
+
+- **Mongo Express**: http://localhost:8081
+- **Username**: admin
+- **Password**: password
+
+## Scripts
+
+```bash
+# Development
+npm run start:dev          # Start with hot reload
+npm run start:debug        # Start in debug mode
+
+# Production
+npm run build              # Build the application
+npm run start:prod         # Start production server
+
+# Testing
+npm run test               # Run unit tests
+npm run test:e2e           # Run end-to-end tests
+npm run test:cov           # Run tests with coverage
+
+# Code Quality
+npm run lint               # Run ESLint
+npm run format             # Format code with Prettier
+```
+
+## Project Structure
+
+```
+src/
+├── auth/                  # Authentication module
+│   ├── strategies/        # Passport strategies
+│   ├── guards/           # Auth guards
+│   └── dtos/             # Data transfer objects
+├── user/                 # User module
+│   ├── schemas/          # MongoDB schemas
+│   └── interfaces/       # TypeScript interfaces
+└── main.ts               # Application entry point
+```
+
+## Tech Stack
+
+- **Framework**: NestJS
+- **Database**: MongoDB with Mongoose
+- **Authentication**: Passport.js (Local, JWT, Google OAuth)
+- **Validation**: class-validator
+- **Password Hashing**: bcrypt
+- **Environment**: dotenv
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is [MIT licensed](LICENSE).
