@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/schemas/user.schema';
 import { ConfigService } from '@nestjs/config';
+import { GoogleUser } from 'src/user/interfaces/google-user.interface';
 
 @Injectable()
 export class AuthService {
@@ -68,7 +69,7 @@ export class AuthService {
     };
   }
 
-  async validateGoogleUser(googleUser: { email: string; name: string }) {
+  async validateGoogleUser(googleUser: GoogleUser) {
     try {
       // Check if user exists
       let user = await this.userService.getUserDocument({
@@ -77,11 +78,7 @@ export class AuthService {
 
       if (!user) {
         // Create new user from Google data
-        const userData = {
-          email: googleUser.email,
-          name: googleUser.name,
-        };
-        user = await this.userService.createGoogleUser(userData);
+        user = await this.userService.createGoogleUser(googleUser);
       }
 
       // Return user in the format expected by login method
@@ -91,5 +88,9 @@ export class AuthService {
       console.error('Error validating Google user:', error);
       throw new UnauthorizedException('Failed to validate Google user');
     }
+  }
+
+  async fetchUserData(email: string) {
+    return await this.userService.getUserByEmail(email);
   }
 }
