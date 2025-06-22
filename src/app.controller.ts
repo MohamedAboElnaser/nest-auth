@@ -19,4 +19,11 @@ export class AppController {
       'passport-data-injected': req.user,
     };
   }
+
+  @Get('frontend')
+  frontendRedirect() {
+    return {
+      message: 'This is the front end page which user directed to ',
+    };
+  }
 }
