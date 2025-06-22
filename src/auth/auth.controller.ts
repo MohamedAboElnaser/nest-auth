@@ -87,8 +87,8 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   async googleAuthRedirect(@Req() req, @Res({ passthrough: true }) res) {
     const { access_token, refresh_token } = this.authService.generateTokens(
-      res.user.email,
-      res.user._id,
+      req.user.email,
+      req.user._id,
     );
 
     res.cookie('refresh_token', refresh_token, {
