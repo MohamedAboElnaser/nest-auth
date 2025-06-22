@@ -25,8 +25,8 @@ A robust authentication system built with NestJS, featuring multiple authenticat
 1. **Clone the repository**
 
    ```bash
-   git clone <repository-url>
-   cd Auth-In-Nest
+   git clone https://github.com/MohamedAboElnaser/nest-auth.git
+   cd nest-auth
    ```
 
 2. **Install dependencies**
