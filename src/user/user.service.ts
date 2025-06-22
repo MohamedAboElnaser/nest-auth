@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { FilterQuery } from 'mongoose';
+import { GoogleUser } from './interfaces/google-user.interface';
 
 @Injectable()
 export class UserService {
@@ -26,7 +27,11 @@ export class UserService {
     return await this.userModel.findOne(query).lean();
   }
 
-  async createGoogleUser(userData: { email: string; name: string }) {
+  async createGoogleUser(userData: GoogleUser) {
     return await new this.userModel(userData).save();
+  }
+
+  async getUserByEmail(email: string) {
+    return await this.userModel.findOne({ email }).select('-password -__v');
   }
 }
