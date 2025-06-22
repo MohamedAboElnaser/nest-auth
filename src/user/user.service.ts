@@ -25,4 +25,8 @@ export class UserService {
   async getUserDocument(query: FilterQuery<User>) {
     return await this.userModel.findOne(query).lean();
   }
+
+  async createGoogleUser(userData: { email: string; name: string }) {
+    return await new this.userModel(userData).save();
+  }
 }

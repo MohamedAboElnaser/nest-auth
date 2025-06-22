@@ -67,4 +67,29 @@ export class AuthService {
       refresh_token,
     };
   }
+
+  async validateGoogleUser(googleUser: { email: string; name: string }) {
+    try {
+      // Check if user exists
+      let user = await this.userService.getUserDocument({
+        email: googleUser.email,
+      });
+
+      if (!user) {
+        // Create new user from Google data
+        const userData = {
+          email: googleUser.email,
+          name: googleUser.name,
+        };
+        user = await this.userService.createGoogleUser(userData);
+      }
+
+      // Return user in the format expected by login method
+      const { password, ...result } = user;
+      return result; // This should have _id and email properties
+    } catch (error) {
+      console.error('Error validating Google user:', error);
+      throw new UnauthorizedException('Failed to validate Google user');
+    }
+  }
 }
