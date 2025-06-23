@@ -12,6 +12,22 @@ A robust authentication system built with NestJS, featuring multiple authenticat
 - **Password Hashing** - Secure bcrypt encryption
 - **Input Validation** - Request validation with class-validator
 
+## Authentication Flow
+
+This application supports two main authentication flows:
+
+### Local Login Flow
+
+![Login Flow](docs/login-flow.png)
+
+The traditional email/password authentication process includes user registration, login with credentials validation, and JWT token generation.
+
+### Google OAuth Flow
+
+![Google OAuth Flow](docs/Google-Oauth.png)
+
+The Google OAuth integration allows users to authenticate using their Google accounts through the OAuth 2.0 protocol.
+
 ## Quick Start
 
 ### Prerequisites
