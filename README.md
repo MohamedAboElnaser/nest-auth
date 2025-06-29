@@ -53,32 +53,10 @@ The Google OAuth integration allows users to authenticate using their Google acc
 
 3. **Environment Setup**
 
-   Create a `.env` file in the root directory with your configuration:
+   _Copy the provided `.env.example` file to your project's root directory and rename it to `.env`. Then, fill in the required values for your environment variables:_
 
-   ```env
-   # Database
-   DB_CONNECTION_STRING='mongodb://admin:password@localhost:27017/nestjs-auth'
-
-   # Server
-   NODE_ENV='development'
-   PORT=4000
-
-   # JWT Configuration
-   JWT_SECRET='your-jwt-secret'
-   JWT_EXPIRES_IN='2h'
-   REFRESH_JWT_SECRET='your-refresh-jwt-secret'
-   REFRESH_JWT_EXPIRES_IN='4d'
-
-   # Cookie Configuration
-   REFRESH_TOKEN_COOKIE_EXPIRES_IN_DAYS=4
-
-   # Google OAuth (Get from Google Cloud Console)
-   GOOGLE_CLIENT_ID='your-google-client-id'
-   GOOGLE_CLIENT_SECRET='your-google-client-secret'
-   GOOGLE_CALLBACK_URL='http://localhost:4000/auth/google/callback'
-
-   # Frontend URL
-   FRONTEND_URL='http://localhost:4000/frontend'
+   ```bash
+   cp .env.example .env
    ```
 
 4. **Start MongoDB with Docker**
